@@ -58,7 +58,7 @@ if "processing_error" not in st.session_state:
 if "dark_mode" not in st.session_state:
     st.session_state.dark_mode = True
 # Incrementing this key forces st.file_uploader to fully reset its
-# internal widget cache — the only reliable way to clear it in Streamlit.
+# internal widget cache -- the only reliable way to clear it in Streamlit.
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = 0
 
@@ -128,7 +128,7 @@ def apply_custom_css(dark_mode: bool):
           letter-spacing: -0.02em;
         }
 
-        /* ── DARK MODE TOGGLE: remove red, use grey/indigo ── */
+        /* -- DARK MODE TOGGLE: remove red, use grey/indigo -- */
         [data-testid="stToggle"] div[role="switch"],
         div[data-baseweb="switch"],
         p[role="switch"] {
@@ -295,15 +295,153 @@ def apply_custom_css(dark_mode: bool):
           background: #374151;
           border-radius: 10px;
         }
+
+        /* ======================================================
+           SYSTEM LIGHT THEME OVERRIDE
+           When Windows is set to Light mode, the browser injects
+           prefers-color-scheme:light which washes out dark CSS.
+           This block re-asserts every dark color so the app
+           looks identical regardless of OS theme setting.
+           ====================================================== */
+        @media (prefers-color-scheme: light) {
+
+          /* Force dark app background */
+          .stApp {
+            background:
+              radial-gradient(1200px 600px at 10% 10%, #1e3a8a 0%, transparent 60%),
+              radial-gradient(900px 500px at 90% 20%, #9333ea 0%, transparent 55%),
+              linear-gradient(180deg, #020617 0%, #020617 100%) !important;
+            color: #e5e7eb !important;
+          }
+
+          /* Force dark sidebar */
+          section[data-testid="stSidebar"] {
+            background: #252d3d !important;
+            border-right: 1.5px solid #2d3748 !important;
+          }
+
+          /* All sidebar text → light */
+          section[data-testid="stSidebar"],
+          section[data-testid="stSidebar"] *,
+          section[data-testid="stSidebar"] p,
+          section[data-testid="stSidebar"] span,
+          section[data-testid="stSidebar"] label,
+          section[data-testid="stSidebar"] div,
+          section[data-testid="stSidebar"] small,
+          section[data-testid="stSidebar"] h1,
+          section[data-testid="stSidebar"] h2,
+          section[data-testid="stSidebar"] h3 {
+            color: #e5e7eb !important;
+          }
+
+          /* All headings → light */
+          h1, h2, h3, h4 {
+            color: #f8fafc !important;
+          }
+
+          /* Main content area text */
+          .main .block-container,
+          .main .block-container * {
+            color: #e5e7eb !important;
+          }
+
+          /* Chat messages */
+          [data-testid="stChatMessage"] {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+          }
+          [data-testid="stChatMessage"] * {
+            color: #e5e7eb !important;
+          }
+
+          /* Chat input */
+          [data-testid="stChatInput"],
+          [data-testid="stChatInput"] > div,
+          [data-testid="stChatInput"] > div > div {
+            background: #020617 !important;
+            border: 1px solid #1f2937 !important;
+          }
+          [data-testid="stChatInput"] textarea {
+            background: #020617 !important;
+            color: #e5e7eb !important;
+          }
+
+          /* File uploader */
+          [data-testid="stFileUploader"] section {
+            background: #020617 !important;
+            border: 1.5px dashed #6366f1 !important;
+          }
+          [data-testid="stFileUploader"] * {
+            color: #e5e7eb !important;
+            background-color: transparent !important;
+          }
+
+          /* Metric values */
+          [data-testid="stMetricValue"],
+          [data-testid="stMetricLabel"] {
+            color: #e5e7eb !important;
+          }
+
+          /* Top header bar Streamlit renders */
+          header[data-testid="stHeader"] {
+            background: #020617 !important;
+          }
+          header[data-testid="stHeader"] * {
+            color: #e5e7eb !important;
+            fill: #e5e7eb !important;
+          }
+
+          /* Toolbar icons (Share, star, pen, GitHub) */
+          [data-testid="stToolbar"],
+          [data-testid="stToolbar"] * {
+            color: #e5e7eb !important;
+            fill: #e5e7eb !important;
+          }
+
+          /* Expander */
+          .streamlit-expanderHeader,
+          .streamlit-expanderHeader * {
+            color: #e5e7eb !important;
+            background: rgba(255,255,255,0.05) !important;
+          }
+
+          textarea { color: #e5e7eb !important; }
+
+          /* Chat input bottom strip and its wrapper */
+          [data-testid="stChatInput"],
+          [data-testid="stChatInput"] > div,
+          [data-testid="stChatInput"] > div > div,
+          [data-testid="stChatInput"] textarea,
+          .stChatInputContainer,
+          .stChatInputContainer > div,
+          div[data-testid="stBottom"],
+          div[data-testid="stBottom"] > div,
+          div[data-testid="stBottom"] > div > div,
+          div[data-testid="stBottomBlockContainer"],
+          div[data-testid="stBottomBlockContainer"] > div {
+            background: #020617 !important;
+            background-color: #020617 !important;
+            border-color: #1f2937 !important;
+          }
+
+          [data-testid="stChatInput"] textarea {
+            color: #e5e7eb !important;
+            caret-color: #6366f1 !important;
+          }
+
+          [data-testid="stChatInput"] textarea::placeholder {
+            color: #4b5563 !important;
+          }
+        }
         </style>
         """
     else:
         css = """
         <style>
 
-        /* ─────────────────────────────────────────────
-           MAIN APP BACKGROUND — soft blue-white gradient
-           ───────────────────────────────────────────── */
+        /* ---------------------------------------------
+           MAIN APP BACKGROUND -- soft blue-white gradient
+           --------------------------------------------- */
         .stApp {
           background:
             radial-gradient(circle at top left,  rgba(96,165,250,0.15), transparent 35%),
@@ -318,9 +456,9 @@ def apply_custom_css(dark_mode: bool):
           max-width: 1200px;
         }
 
-        /* ─────────────────────────────────────────────
-           SIDEBAR — medium grey, readable palette
-           ───────────────────────────────────────────── */
+        /* ---------------------------------------------
+           SIDEBAR -- medium grey, readable palette
+           --------------------------------------------- */
         section[data-testid="stSidebar"] {
           background: #e8ecf2 !important;
           border-right: 1.5px solid #cdd5e0 !important;
@@ -340,11 +478,11 @@ def apply_custom_css(dark_mode: bool):
           color: #1e293b !important;
         }
 
-        /* ─────────────────────────────────────────────
-           FIX 1 — TOGGLE: light blue off → indigo on
-           ───────────────────────────────────────────── */
+        /* ---------------------------------------------
+           FIX 1 -- TOGGLE: light blue off → indigo on
+           --------------------------------------------- */
 
-        /* Track — OFF state: light blue */
+        /* Track -- OFF state: light blue */
         section[data-testid="stSidebar"] [data-testid="stToggle"] div[role="switch"],
         [data-testid="stToggle"] div[role="switch"],
         div[data-baseweb="switch"],
@@ -359,14 +497,14 @@ def apply_custom_css(dark_mode: bool):
           transition: background 0.2s !important;
         }
 
-        /* Track — ON state: indigo */
+        /* Track -- ON state: indigo */
         [data-testid="stToggle"] div[role="switch"][aria-checked="true"],
         div[data-baseweb="switch"][aria-checked="true"],
         p[role="switch"][aria-checked="true"] {
           background-color: #6366f1 !important;
         }
 
-        /* Thumb — white circle */
+        /* Thumb -- white circle */
         [data-testid="stToggle"] div[role="switch"] > div,
         div[data-baseweb="switch"] > div,
         p[role="switch"] > div {
@@ -403,12 +541,12 @@ def apply_custom_css(dark_mode: bool):
           font-weight: 600 !important;
         }
 
-        /* ─────────────────────────────────────────────
-           FIX 2 — FILE UPLOADER CARD
+        /* ---------------------------------------------
+           FIX 2 -- FILE UPLOADER CARD
            Streamlit injects an inline background-color on the
            inner file-pill div. We must override every layer:
            outer section, inner card div, ALL child elements.
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
 
         /* Outer drop zone */
         [data-testid="stFileUploader"] > div,
@@ -418,7 +556,7 @@ def apply_custom_css(dark_mode: bool):
           border-radius: 14px !important;
         }
 
-        /* The uploaded-file pill / card — every depth */
+        /* The uploaded-file pill / card -- every depth */
         [data-testid="stFileUploader"] [data-testid="stFileUploaderFile"],
         [data-testid="stFileUploader"] [data-testid="stFileUploaderFile"] > div,
         [data-testid="stFileUploader"] [data-testid="stFileUploaderFile"] > div > div,
@@ -470,9 +608,9 @@ def apply_custom_css(dark_mode: bool):
           font-weight: 600 !important;
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            HERO CARD
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         .hero-card {
           background: rgba(255,255,255,0.82);
           border: 1px solid #dde6f5;
@@ -498,9 +636,9 @@ def apply_custom_css(dark_mode: bool):
           font-size: 1rem;
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            CHAT MESSAGES
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         [data-testid="stChatMessage"] {
           background: rgba(255,255,255,0.82) !important;
           border: 1px solid #dde6f5;
@@ -517,9 +655,9 @@ def apply_custom_css(dark_mode: bool):
           background: linear-gradient(135deg, #eef4ff, #f4f0ff) !important;
         }
 
-        /* ─────────────────────────────────────────────
-           CHAT INPUT BOX — white bg, dark text
-           ───────────────────────────────────────────── */
+        /* ---------------------------------------------
+           CHAT INPUT BOX -- white bg, dark text
+           --------------------------------------------- */
         [data-testid="stChatInput"],
         [data-testid="stChatInput"] > div,
         [data-testid="stChatInput"] > div > div {
@@ -552,9 +690,9 @@ def apply_custom_css(dark_mode: bool):
 
         textarea { color: #111827 !important; }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            SIDEBAR BUTTONS
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         .stButton > button {
           background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
           color: white !important;
@@ -570,9 +708,9 @@ def apply_custom_css(dark_mode: bool):
           box-shadow: 0 10px 22px -10px rgba(37,99,235,0.52);
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            SOURCE CARDS
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         .source-card {
           background: rgba(255,255,255,0.96);
           border-left: 4px solid #7c3aed;
@@ -594,9 +732,9 @@ def apply_custom_css(dark_mode: bool):
           line-height: 1.6;
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            METRICS
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         [data-testid="stMetricValue"] {
           color: #111827 !important;
           font-weight: 700 !important;
@@ -607,9 +745,9 @@ def apply_custom_css(dark_mode: bool):
           font-weight: 600 !important;
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            BADGES
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         .badge {
           display: inline-flex;
           align-items: center;
@@ -625,18 +763,18 @@ def apply_custom_css(dark_mode: bool):
         .badge-medium { background: rgba(245,158,11,0.14); color: #92400e; border: 1px solid rgba(245,158,11,0.22); }
         .badge-low    { background: rgba(239,68,68,0.14);  color: #991b1b; border: 1px solid rgba(239,68,68,0.22); }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            EXPANDER
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         .streamlit-expanderHeader {
           background: rgba(255,255,255,0.82);
           border-radius: 10px;
           border: 1px solid #dde6f5;
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            HINT CARD
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         .hint-card {
           background: rgba(239,246,255,0.9);
           border: 1px solid rgba(59,130,246,0.25);
@@ -645,9 +783,9 @@ def apply_custom_css(dark_mode: bool):
           border-radius: 14px;
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            SIDEBAR FOOTER
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         .sidebar-footer {
           text-align: center;
           color: #64748b;
@@ -656,11 +794,130 @@ def apply_custom_css(dark_mode: bool):
           padding-bottom: 0.4rem;
         }
 
-        /* ─────────────────────────────────────────────
+        /* ---------------------------------------------
            SCROLLBAR
-           ───────────────────────────────────────────── */
+           --------------------------------------------- */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: #c7d2e0; border-radius: 10px; }
+
+        /* =====================================================
+           OS DARK THEME OVERRIDE FOR LIGHT APP MODE
+           When Windows is Dark, browser injects
+           prefers-color-scheme:dark which turns the header bar,
+           bottom strip, and Streamlit chrome black even when
+           the app toggle is set to Light.
+           This block re-asserts every light color so the app
+           looks identical regardless of OS theme setting.
+           ===================================================== */
+        @media (prefers-color-scheme: dark) {
+
+          /* Main app background -- force light */
+          .stApp {
+            background:
+              radial-gradient(circle at top left,  rgba(96,165,250,0.15), transparent 35%),
+              radial-gradient(circle at top right, rgba(168,85,247,0.11), transparent 32%),
+              linear-gradient(180deg, #f0f4ff 0%, #eaf0fb 100%) !important;
+            color: #111827 !important;
+          }
+
+          /* Main content text */
+          .main .block-container,
+          .main .block-container p,
+          .main .block-container span,
+          .main .block-container div,
+          .main .block-container label {
+            color: #111827 !important;
+          }
+
+          /* Sidebar -- force light grey */
+          section[data-testid="stSidebar"] {
+            background: #e8ecf2 !important;
+            border-right: 1.5px solid #cdd5e0 !important;
+          }
+          section[data-testid="stSidebar"],
+          section[data-testid="stSidebar"] * {
+            color: #1e293b !important;
+          }
+
+          /* Top header bar -- force light */
+          header[data-testid="stHeader"] {
+            background: #f0f4ff !important;
+            border-bottom: 1px solid #dde6f5 !important;
+          }
+          header[data-testid="stHeader"] * {
+            color: #1e293b !important;
+            fill: #1e293b !important;
+          }
+
+          /* Toolbar icons (Share, star, pen, GitHub) */
+          [data-testid="stToolbar"],
+          [data-testid="stToolbar"] * {
+            color: #1e293b !important;
+            fill: #1e293b !important;
+          }
+
+          /* Bottom strip and chat input container */
+          div[data-testid="stBottom"],
+          div[data-testid="stBottom"] > div,
+          div[data-testid="stBottom"] > div > div,
+          div[data-testid="stBottomBlockContainer"],
+          div[data-testid="stBottomBlockContainer"] > div,
+          .stChatInputContainer,
+          .stChatInputContainer > div {
+            background: #f0f4ff !important;
+            background-color: #f0f4ff !important;
+          }
+
+          /* Chat input box itself */
+          [data-testid="stChatInput"],
+          [data-testid="stChatInput"] > div,
+          [data-testid="stChatInput"] > div > div {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            border: 1.5px solid #c7d2e0 !important;
+            border-radius: 16px !important;
+          }
+          [data-testid="stChatInput"] textarea,
+          [data-testid="stChatInput"] input {
+            background: #ffffff !important;
+            color: #111827 !important;
+            caret-color: #2563eb !important;
+          }
+          [data-testid="stChatInput"] textarea::placeholder {
+            color: #6b7280 !important;
+            opacity: 1 !important;
+          }
+
+          /* Chat messages */
+          [data-testid="stChatMessage"] {
+            background: rgba(255,255,255,0.82) !important;
+            border: 1px solid #dde6f5 !important;
+          }
+          [data-testid="stChatMessage"] * {
+            color: #111827 !important;
+          }
+
+          /* File uploader */
+          [data-testid="stFileUploader"] > div,
+          [data-testid="stFileUploader"] section {
+            background: #f8faff !important;
+            border: 1.5px dashed #8b5cf6 !important;
+          }
+          [data-testid="stFileUploader"] * {
+            color: #1e293b !important;
+            background-color: transparent !important;
+          }
+          [data-testid="stFileUploader"] li,
+          [data-testid="stFileUploader"] [data-testid="stFileUploaderFile"] {
+            background-color: #eef2ff !important;
+          }
+
+          /* Metrics */
+          [data-testid="stMetricValue"] { color: #111827 !important; }
+          [data-testid="stMetricLabel"] { color: #475569 !important; }
+
+          textarea { color: #111827 !important; }
+        }
 
         </style>
         """
@@ -680,7 +937,7 @@ def get_embeddings():
 # =============================================================================
 def infer_query_mode(query: str) -> str:
     """
-    FIX #8 — Classify the query intent with a broader keyword vocabulary.
+    FIX #8 -- Classify the query intent with a broader keyword vocabulary.
     Old version used ~3 phrases per category and missed common phrasings
     like 'summarise', 'tell me about', 'give me details on', etc.
     """
@@ -756,7 +1013,7 @@ def extract_highlight(query: str, text: str) -> str:
 
 def confidence_label(sources: List[Dict], answer: str) -> Tuple[str, str]:
     """
-    FIX #1 — Confidence now measures how well the ANSWER is grounded in
+    FIX #1 -- Confidence now measures how well the ANSWER is grounded in
     the retrieved sources, not how much the query keywords appear in chunks.
     Old approach gave false-high confidence when query words were common
     but the answer itself was not drawn from the document.
@@ -802,7 +1059,7 @@ def confidence_label(sources: List[Dict], answer: str) -> Tuple[str, str]:
 # =============================================================================
 def process_pdf(pdf_bytes: bytes) -> Tuple[FAISS, dict]:
     """
-    FIX #9 — Temp file is now explicitly closed before unlink.
+    FIX #9 -- Temp file is now explicitly closed before unlink.
     Previously, PyPDFLoader held an open file handle on Windows,
     causing os.unlink() to silently fail and accumulate temp files.
     We now call loader.load() inside the try block, delete the file
@@ -813,7 +1070,7 @@ def process_pdf(pdf_bytes: bytes) -> Tuple[FAISS, dict]:
     try:
         with os.fdopen(tmp_fd, "wb") as f:
             f.write(pdf_bytes)
-        # File handle is now fully closed — safe to read then delete
+        # File handle is now fully closed -- safe to read then delete
         loader = PyPDFLoader(file_path)
         documents = loader.load()
         # Loader is done; release any OS handle by deleting now
@@ -850,12 +1107,12 @@ def process_pdf(pdf_bytes: bytes) -> Tuple[FAISS, dict]:
 
 def retrieve_sources(db: FAISS, query: str, chat_history: str = "") -> List[Dict]:
     """
-    FIX #6 — Now retrieves RETRIEVE_K chunks and forwards all ANSWER_K to LLM.
-    FIX #7 — Retrieval query is enriched with last assistant turn so follow-up
+    FIX #6 -- Now retrieves RETRIEVE_K chunks and forwards all ANSWER_K to LLM.
+    FIX #7 -- Retrieval query is enriched with last assistant turn so follow-up
              questions like 'what about managers?' fetch relevant chunks.
-    FIX #2 — L2 distance converted to a 0-100 similarity score for display.
+    FIX #2 -- L2 distance converted to a 0-100 similarity score for display.
              Lower L2 = better match, so similarity = 1 / (1 + distance).
-    FIX #10 — Returns plain dicts (not dataclass instances) for JSON safety.
+    FIX #10 -- Returns plain dicts (not dataclass instances) for JSON safety.
     """
     # Build a context-enriched query for FAISS (FIX #7)
     enriched_query = query
@@ -918,7 +1175,7 @@ def build_context(sources: List[Dict], query: str) -> str:
 
 def sanitise_input(text: str) -> str:
     """
-    FIX #3 — Strip prompt-injection patterns before embedding user input
+    FIX #3 -- Strip prompt-injection patterns before embedding user input
     into the LLM prompt. Removes common instruction-override phrases and
     control characters that could manipulate model behaviour.
     """
@@ -944,9 +1201,9 @@ def sanitise_input(text: str) -> str:
 
 def generate_answer(query: str, context: str, chat_history: str = "") -> str:
     """
-    FIX #3 — query is sanitised before prompt insertion.
-    FIX #4 — full try/except around the API call with user-friendly errors.
-    FIX #11 — max_tokens raised from 700 to 1200 to prevent cut-off answers.
+    FIX #3 -- query is sanitised before prompt insertion.
+    FIX #4 -- full try/except around the API call with user-friendly errors.
+    FIX #11 -- max_tokens raised from 700 to 1200 to prevent cut-off answers.
     """
     safe_query = sanitise_input(query)
     mode = infer_query_mode(safe_query)
@@ -1002,7 +1259,7 @@ Instructions:
 - Answer clearly and directly. Do NOT start with phrases like "According to the document".
 """
 
-    # FIX #4 — API call wrapped with specific error handling
+    # FIX #4 -- API call wrapped with specific error handling
     try:
         completion = client.chat.completions.create(
             model=MODEL_NAME,
@@ -1086,15 +1343,15 @@ with st.sidebar:
     st.markdown("---")
 
     if st.session_state.db is not None:
-        # ── Status badge ──
+        # -- Status badge --
         st.markdown(
-            '<div class="badge badge-high">✅ Ready — Document loaded</div>',
+            '<div class="badge badge-high">✅ Ready -- Document loaded</div>',
             unsafe_allow_html=True
         )
         if st.session_state.file_name:
             st.caption(f"📑 {st.session_state.file_name}")
 
-        # ── Pages & Chunks ──
+        # -- Pages & Chunks --
         if st.session_state.doc_stats:
             col1, col2 = st.columns(2)
             with col1:
@@ -1104,7 +1361,7 @@ with st.sidebar:
 
         st.markdown("")
 
-        # ── Single "Remove PDF" button — clears file info + chat together ──
+        # -- Single "Remove PDF" button -- clears file info + chat together --
         col_a, col_b = st.columns(2)
         with col_a:
             if st.button("🗑️ Remove PDF", use_container_width=True):
@@ -1143,7 +1400,7 @@ with st.sidebar:
     )
 
 if uploaded_file:
-    # FIX #15 — reject files over MAX_FILE_MB before any processing
+    # FIX #15 -- reject files over MAX_FILE_MB before any processing
     file_mb = len(uploaded_file.getvalue()) / (1024 * 1024)
     if file_mb > MAX_FILE_MB:
         st.error(f"❌ File too large ({file_mb:.1f} MB). Maximum allowed size is {MAX_FILE_MB} MB.")
@@ -1184,7 +1441,7 @@ if st.session_state.db is None:
     st.stop()
 
 
-# FIX #13 — single reusable source card renderer (was duplicated twice)
+# FIX #13 -- single reusable source card renderer (was duplicated twice)
 def render_source_card(src: Dict) -> str:
     """Return the HTML for one source card. Accepts a plain dict (FIX #10)."""
     return f"""
@@ -1210,7 +1467,7 @@ for msg in st.session_state.messages:
         if msg.get("sources"):
             with st.expander("📖 View Sources", expanded=False):
                 for src in msg["sources"]:
-                    # FIX #10 — sources stored as dicts; use dict keys
+                    # FIX #10 -- sources stored as dicts; use dict keys
                     st.markdown(render_source_card(src), unsafe_allow_html=True)
 
 user_input = st.chat_input("Ask a question about your document...")
@@ -1221,13 +1478,13 @@ if user_input:
 
     with st.chat_message("assistant"):
         with st.spinner("Analyzing document..."):
-            # FIX #7 — pass chat_history into retrieval so follow-ups work
+            # FIX #7 -- pass chat_history into retrieval so follow-ups work
             chat_history = format_chat_history()
             sources = retrieve_sources(st.session_state.db, user_input, chat_history)
             context = build_context(sources, user_input)
             answer = generate_answer(user_input, context, chat_history)
 
-            # FIX #1 — confidence now scored against the answer, not the query
+            # FIX #1 -- confidence now scored against the answer, not the query
             conf_text, conf_class = confidence_label(sources, answer)
 
             st.markdown(
@@ -1249,7 +1506,7 @@ if user_input:
             else:
                 st.info("No relevant sources found for this question.")
 
-    # FIX #10 — sources already plain dicts; safe to store in session state
+    # FIX #10 -- sources already plain dicts; safe to store in session state
     st.session_state.messages.append(
         {
             "role":    "assistant",
