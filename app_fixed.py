@@ -19,7 +19,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 # =============================================================================
 # CONFIG
 # =============================================================================
-MODEL_NAME = "meta-llama/llama-3-8b-instruct"
+MODEL_NAME = "meta-llama/llama-3.3-8b-instruct:free"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 # FIX #5: chunk size raised 400->750 for policy/HR docs so clauses are
